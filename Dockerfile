@@ -1,27 +1,23 @@
-# Use a lightweight Node.js image
 FROM node:20-alpine
 
-# Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json first for caching
+# Copy only package files first for caching
 COPY package*.json ./
 
-# Install dependencies including devDependencies (adapter-node is usually a devDependency)
+# Install dependencies including devDependencies
 RUN npm install --include=dev
 
-# Copy the rest of the project files
+# Copy rest of the code
 COPY . .
 
-# Build the SvelteKit app
+# Build SvelteKit
 RUN npm run build
 
-# Environment variables to allow external access
+# Expose environment variables for Coolify
 ENV HOST=0.0.0.0
 ENV PORT=3000
-
-# Expose port 3000
 EXPOSE 3000
 
-# Run the built Node server
-CMD ["node", "build"]
+# Use npm start instead of node build
+CMD ["npm", "run", "start"]
